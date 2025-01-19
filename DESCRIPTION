@@ -1,0 +1,23 @@
+Package: shine
+Type: Package
+Title: Functions for shiny Apps
+Version: 0.1.0
+Authors@R: c(
+    person(
+      "Olivier", "Celhay",
+      email = "olivier.celhay@gmail.com",
+      role = c("aut", "cre")
+    )
+  )
+Description: Check data quality.
+    Various functions and modules.
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    chk,
+    glue,
+    logger,
+    shiny,
+    shinyWidgets
+RoxygenNote: 7.3.2
+License: MIT + file LICENSE
