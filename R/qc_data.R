@@ -14,6 +14,8 @@
 #' qc_data(df, required_columns = c("a", "b"))
 #' qc_data(df, required_columns = c("a", "c"))
 #' }
+#'
+#' @export
 qc_data <- function(data,
                     required_columns = NULL,
                     alert = shiny::isRunning()) {

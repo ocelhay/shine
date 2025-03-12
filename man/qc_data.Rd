@@ -25,4 +25,5 @@ df <- data.frame(a = 1:5, b = 6:10)
 qc_data(df, required_columns = c("a", "b"))
 qc_data(df, required_columns = c("a", "c"))
 }
+
 }
