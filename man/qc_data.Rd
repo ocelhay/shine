@@ -20,7 +20,9 @@ Logical. Returns TRUE if the data frame passes all checks; otherwise, FALSE.
 Validates the provided data frame by checking its format and ensuring that required columns exist.
 }
 \examples{
+\dontrun{
 df <- data.frame(a = 1:5, b = 6:10)
 qc_data(df, required_columns = c("a", "b"))
 qc_data(df, required_columns = c("a", "c"))
+}
 }

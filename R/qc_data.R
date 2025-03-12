@@ -9,11 +9,14 @@
 #' @return Logical. Returns TRUE if the data frame passes all checks; otherwise, FALSE.
 #'
 #' @examples
+#' \dontrun{
 #' df <- data.frame(a = 1:5, b = 6:10)
 #' qc_data(df, required_columns = c("a", "b"))
 #' qc_data(df, required_columns = c("a", "c"))
-qc_data <- function(data, required_columns = NULL, alert = shiny::isRunning()) {
-
+#' }
+qc_data <- function(data,
+                    required_columns = NULL,
+                    alert = shiny::isRunning()) {
   # Check if input is a valid data frame
   if (!chk::vld_data(data)) {
     msg <- "Data is not a data frame."
