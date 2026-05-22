@@ -4,7 +4,13 @@
 \alias{read_s3}
 \title{Read Data from S3 Storage}
 \usage{
-read_s3(path, bucket, format = c("auto", "qs", "rds", "csv", "parquet"))
+read_s3(
+  path,
+  bucket,
+  format = c("auto", "qs", "rds", "csv", "parquet"),
+  base_url = "storjshare.io",
+  region = "gateway.us1"
+)
 }
 \arguments{
 \item{path}{Character string specifying the path to the file in S3}
@@ -12,6 +18,10 @@ read_s3(path, bucket, format = c("auto", "qs", "rds", "csv", "parquet"))
 \item{bucket}{Character string specifying the S3 bucket name}
 
 \item{format}{Character string specifying the file format. One of "auto", "qs", "rds", "csv", or "parquet"}
+
+\item{base_url}{S3 base URL. Defaults to Storj; pass `"s3.amazonaws.com"` for AWS.}
+
+\item{region}{S3 region. Defaults to Storj gateway; pass e.g. `"ap-southeast-1"` for AWS.}
 }
 \value{
 The data read from the S3 file in the specified format

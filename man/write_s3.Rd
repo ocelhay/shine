@@ -4,7 +4,14 @@
 \alias{write_s3}
 \title{Write Data to S3 Storage}
 \usage{
-write_s3(data, bucket, format = c("qs", "rds", "csv", "parquet"), name = NULL)
+write_s3(
+  data,
+  bucket,
+  format = c("qs", "rds", "csv", "parquet"),
+  name = NULL,
+  base_url = "storjshare.io",
+  region = "gateway.us1"
+)
 }
 \arguments{
 \item{data}{Data to be written to S3}
@@ -14,6 +21,10 @@ write_s3(data, bucket, format = c("qs", "rds", "csv", "parquet"), name = NULL)
 \item{format}{Character string specifying the file format. One of "qs", "rds", "csv", or "parquet"}
 
 \item{name}{Optional character string specifying the output file name}
+
+\item{base_url}{S3 base URL. Defaults to Storj; pass `"s3.amazonaws.com"` for AWS.}
+
+\item{region}{S3 region. Defaults to Storj gateway; pass e.g. `"ap-southeast-1"` for AWS.}
 }
 \value{
 Nothing. Writes data to S3 as a side effect.

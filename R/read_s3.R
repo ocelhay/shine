@@ -3,11 +3,15 @@
 #' @param path Character string specifying the path to the file in S3
 #' @param bucket Character string specifying the S3 bucket name
 #' @param format Character string specifying the file format. One of "auto", "qs", "rds", "csv", or "parquet"
+#' @param base_url S3 base URL. Defaults to Storj; pass `"s3.amazonaws.com"` for AWS.
+#' @param region S3 region. Defaults to Storj gateway; pass e.g. `"ap-southeast-1"` for AWS.
 #' @return The data read from the S3 file in the specified format
 #' @export
 read_s3 <- function(path,
                     bucket,
-                    format = c("auto", "qs", "rds", "csv", "parquet")) {
+                    format   = c("auto", "qs", "rds", "csv", "parquet"),
+                    base_url = "storjshare.io",
+                    region   = "gateway.us1") {
   format <- match.arg(format)
   if (format == "auto") {
     format <- tools::file_ext(path) |>
@@ -24,8 +28,8 @@ read_s3 <- function(path,
     data <- aws.s3::get_object(
       object   = path,
       bucket   = bucket,
-      base_url = "storjshare.io",
-      region   = "gateway.us1",
+      base_url = base_url,
+      region   = region,
       key      = Sys.getenv("AWS_ACCESS_KEY_ID"),
       secret   = Sys.getenv("AWS_SECRET_ACCESS_KEY")
     ),
@@ -59,12 +63,16 @@ read_s3 <- function(path,
 #' @param bucket Character string specifying the S3 bucket name
 #' @param format Character string specifying the file format. One of "qs", "rds", "csv", or "parquet"
 #' @param name Optional character string specifying the output file name
+#' @param base_url S3 base URL. Defaults to Storj; pass `"s3.amazonaws.com"` for AWS.
+#' @param region S3 region. Defaults to Storj gateway; pass e.g. `"ap-southeast-1"` for AWS.
 #' @return Nothing. Writes data to S3 as a side effect.
 #' @export
 write_s3 <- function(data,
                      bucket,
-                     format = c("qs", "rds", "csv", "parquet"),
-                     name = NULL) {
+                     format   = c("qs", "rds", "csv", "parquet"),
+                     name     = NULL,
+                     base_url = "storjshare.io",
+                     region   = "gateway.us1") {
   format <- match.arg(format)
 
   # return if data is empty
@@ -105,8 +113,8 @@ write_s3 <- function(data,
       file     = file,
       object   = path_s3,
       bucket   = bucket,
-      base_url = "storjshare.io",
-      region   = "gateway.us1",
+      base_url = base_url,
+      region   = region,
       key      = Sys.getenv("AWS_ACCESS_KEY_ID"),
       secret   = Sys.getenv("AWS_SECRET_ACCESS_KEY")
     ),
@@ -114,25 +122,4 @@ write_s3 <- function(data,
       stop(glue::glue("Can't save file {file} to S3."))
     }
   )
-}
-
-#' List Contents of an S3 Bucket
-#'
-#' @param bucket Character string specifying the S3 bucket name
-#' @return A tibble containing information about files in the bucket
-#' @export
-list_bucket <- function(bucket) {
-  aws.s3::get_bucket_df(
-    bucket   = bucket,
-    base_url = "storjshare.io",
-    region   = "gateway.us1",
-    key      = Sys.getenv("AWS_ACCESS_KEY_ID"),
-    secret   = Sys.getenv("AWS_SECRET_ACCESS_KEY")
-  ) |>
-    dplyr::select(
-      key      = Key,
-      modified = LastModified,
-      size     = Size
-    ) |>
-    dplyr::as_tibble()
 }

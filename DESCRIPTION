@@ -16,15 +16,17 @@ LazyData: true
 Imports:
     arrow,
     aws.s3,
-    chk,
     cli,
     dplyr,
     fs,
+    ggplot2,
     glue,
-    logger,
+    plotly,
     qs,
     readr,
-    shiny,
-    shinyWidgets
-RoxygenNote: 7.3.2
+    rlang,
+    scales,
+    stringr,
+    tidyr
 License: MIT + file LICENSE
+Config/roxygen2/version: 8.0.0
