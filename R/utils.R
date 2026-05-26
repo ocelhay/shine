@@ -1,13 +1,13 @@
 # utils -------------------------------------------------------------------------
 
-#' @noRd
+#' @export
 `%not_in%` <- Negate(`%in%`)
 
-#' @noRd
+#' @export
 not_null <- Negate(is.null)
 
-#' @noRd
+#' @export
 not_na <- Negate(is.na)
 
-#' @noRd
+#' @export
 n_unique <- function(vec) vec |> unique() |> length()
