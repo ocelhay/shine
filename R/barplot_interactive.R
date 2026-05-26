@@ -27,18 +27,15 @@ barplot_interactive <- function(
   order
 ) {
   ## -- prepare data ------------------------------------------------------------
-  data_plot <- data %>%
-    {
-      if (count) {
-        dplyr::count(., dplyr::across(dplyr::any_of(c(xaxis, color, facet)))) |>
-          tidyr::complete(
-            !!!rlang::syms(setdiff(c(xaxis, color, facet), "none")),
-            fill = list(n = 0)
-          )
-      } else {
-        .
-      }
-    } |>
+  if (count) {
+    data <- data |>
+      dplyr::count(dplyr::across(dplyr::any_of(c(xaxis, color, facet)))) |>
+      tidyr::complete(
+        !!!rlang::syms(setdiff(c(xaxis, color, facet), "none")),
+        fill = list(n = 0)
+      )
+  }
+  data_plot <- data |>
     dplyr::group_by(dplyr::across(dplyr::any_of(c(xaxis, facet)))) |>
     dplyr::mutate(
       none    = 0,
