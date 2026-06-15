@@ -22,7 +22,6 @@ Imports:
     ggplot2,
     glue,
     plotly,
-    qs,
     readr,
     rlang,
     scales,

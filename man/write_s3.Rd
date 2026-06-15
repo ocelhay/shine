@@ -7,7 +7,7 @@
 write_s3(
   data,
   bucket,
-  format = c("qs", "rds", "csv", "parquet"),
+  format = c("rds", "csv", "parquet"),
   name = NULL,
   base_url = "storjshare.io",
   region = "gateway.us1"
@@ -18,7 +18,7 @@ write_s3(
 
 \item{bucket}{Character string specifying the S3 bucket name}
 
-\item{format}{Character string specifying the file format. One of "qs", "rds", "csv", or "parquet"}
+\item{format}{Character string specifying the file format. One of "rds", "csv", or "parquet"}
 
 \item{name}{Optional character string specifying the output file name}
 

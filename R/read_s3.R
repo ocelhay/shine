@@ -2,23 +2,24 @@
 #'
 #' @param path Character string specifying the path to the file in S3
 #' @param bucket Character string specifying the S3 bucket name
-#' @param format Character string specifying the file format. One of "auto", "qs", "rds", "csv", or "parquet"
+#' @param format Character string specifying the file format. One of "auto", "rds", "csv", or "parquet"
 #' @param base_url S3 base URL. Defaults to Storj; pass `"s3.amazonaws.com"` for AWS.
 #' @param region S3 region. Defaults to Storj gateway; pass e.g. `"ap-southeast-1"` for AWS.
 #' @return The data read from the S3 file in the specified format
 #' @export
-read_s3 <- function(path,
-                    bucket,
-                    format   = c("auto", "qs", "rds", "csv", "parquet"),
-                    base_url = "storjshare.io",
-                    region   = "gateway.us1") {
+read_s3 <- function(
+  path,
+  bucket,
+  format = c("auto", "rds", "csv", "parquet"),
+  base_url = "storjshare.io",
+  region = "gateway.us1"
+) {
   format <- match.arg(format)
   if (format == "auto") {
     format <- tools::file_ext(path) |>
       switch(
-        qs      = "qs",
-        rds     = "rds",
-        csv     = "csv",
+        rds = "rds",
+        csv = "csv",
         parquet = "parquet",
         stop("Unknown file format.")
       )
@@ -26,22 +27,19 @@ read_s3 <- function(path,
 
   tryCatch(
     data <- aws.s3::get_object(
-      object   = path,
-      bucket   = bucket,
+      object = path,
+      bucket = bucket,
       base_url = base_url,
-      region   = region,
-      key      = Sys.getenv("AWS_ACCESS_KEY_ID"),
-      secret   = Sys.getenv("AWS_SECRET_ACCESS_KEY")
+      region = region,
+      key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+      secret = Sys.getenv("AWS_SECRET_ACCESS_KEY")
     ),
     error = function(e) {
       stop(glue::glue("can't load {path} from S3."))
     }
   )
 
-  if (format == "qs") {
-    data |>
-      qs::qdeserialize()
-  } else if (format == "rds") {
+  if (format == "rds") {
     data |>
       rawConnection() |>
       gzcon() |>
@@ -61,18 +59,20 @@ read_s3 <- function(path,
 #'
 #' @param data Data to be written to S3
 #' @param bucket Character string specifying the S3 bucket name
-#' @param format Character string specifying the file format. One of "qs", "rds", "csv", or "parquet"
+#' @param format Character string specifying the file format. One of "rds", "csv", or "parquet"
 #' @param name Optional character string specifying the output file name
 #' @param base_url S3 base URL. Defaults to Storj; pass `"s3.amazonaws.com"` for AWS.
 #' @param region S3 region. Defaults to Storj gateway; pass e.g. `"ap-southeast-1"` for AWS.
 #' @return Nothing. Writes data to S3 as a side effect.
 #' @export
-write_s3 <- function(data,
-                     bucket,
-                     format   = c("qs", "rds", "csv", "parquet"),
-                     name     = NULL,
-                     base_url = "storjshare.io",
-                     region   = "gateway.us1") {
+write_s3 <- function(
+  data,
+  bucket,
+  format = c("rds", "csv", "parquet"),
+  name = NULL,
+  base_url = "storjshare.io",
+  region = "gateway.us1"
+) {
   format <- match.arg(format)
 
   # return if data is empty
@@ -98,9 +98,7 @@ write_s3 <- function(data,
 
   # create temporary file in selected format
   file <- file.path(tempdir(), path_file)
-  if (format == "qs") {
-    qs::qsave(data, file)
-  } else if (format == "rds") {
+  if (format == "rds") {
     saveRDS(data, file)
   } else if (format == "csv") {
     readr::write_csv(data, file, na = "")
@@ -110,13 +108,13 @@ write_s3 <- function(data,
 
   tryCatch(
     aws.s3::put_object(
-      file     = file,
-      object   = path_s3,
-      bucket   = bucket,
+      file = file,
+      object = path_s3,
+      bucket = bucket,
       base_url = base_url,
-      region   = region,
-      key      = Sys.getenv("AWS_ACCESS_KEY_ID"),
-      secret   = Sys.getenv("AWS_SECRET_ACCESS_KEY")
+      region = region,
+      key = Sys.getenv("AWS_ACCESS_KEY_ID"),
+      secret = Sys.getenv("AWS_SECRET_ACCESS_KEY")
     ),
     error = function(e) {
       stop(glue::glue("Can't save file {file} to S3."))
