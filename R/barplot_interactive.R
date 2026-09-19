@@ -22,8 +22,8 @@ barplot_interactive <- function(
   facet,
   facet_total,
   count = TRUE,
-  flip  = FALSE,
-  unit  = "units",
+  flip = FALSE,
+  unit = "units",
   order
 ) {
   ## -- prepare data ------------------------------------------------------------
@@ -38,7 +38,7 @@ barplot_interactive <- function(
   data_plot <- data |>
     dplyr::group_by(dplyr::across(dplyr::any_of(c(xaxis, facet)))) |>
     dplyr::mutate(
-      none    = 0,
+      none = 0,
       percent = round(n / sum(n) * 100, 2)
     ) |>
     dplyr::ungroup() |>
@@ -50,8 +50,8 @@ barplot_interactive <- function(
       p <- ggplot2::ggplot(
         data_plot,
         ggplot2::aes(
-          x    = reorder(.data[[xaxis]], -n),
-          y    = n,
+          x = reorder(.data[[xaxis]], -n),
+          y = n,
           fill = .data[[color]],
           text = .data[["text_label"]]
         )
@@ -60,8 +60,8 @@ barplot_interactive <- function(
       p <- ggplot2::ggplot(
         data_plot,
         ggplot2::aes(
-          x    = .data[[xaxis]],
-          y    = n,
+          x = .data[[xaxis]],
+          y = n,
           fill = .data[[color]],
           text = .data[["text_label"]]
         )
@@ -69,15 +69,17 @@ barplot_interactive <- function(
     }
     p <- p +
       ggplot2::scale_y_continuous(
-        breaks = function(x) unique(floor(pretty(seq(min(x), (max(x) + 1) * 1.1))))
+        breaks = function(x) {
+          unique(floor(pretty(seq(min(x), (max(x) + 1) * 1.1))))
+        }
       )
   } else {
     if (flip) {
       p <- ggplot2::ggplot(
         data_plot,
         ggplot2::aes(
-          x    = reorder(.data[[xaxis]], -n),
-          y    = percent,
+          x = reorder(.data[[xaxis]], -n),
+          y = percent,
           fill = .data[[color]],
           text = .data[["text_label"]]
         )
@@ -86,25 +88,28 @@ barplot_interactive <- function(
       p <- ggplot2::ggplot(
         data_plot,
         ggplot2::aes(
-          x    = .data[[xaxis]],
-          y    = percent,
+          x = .data[[xaxis]],
+          y = percent,
           fill = .data[[color]],
           text = .data[["text_label"]]
         )
       )
     }
-    p <- p + ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 1))
+    p <- p +
+      ggplot2::scale_y_continuous(labels = scales::percent_format(scale = 1))
   }
 
   p <- p +
     ggplot2::geom_bar(
-      position    = "stack",
-      stat        = "identity",
-      width       = barplot_optimal_width(data_plot, xaxis),
+      position = "stack",
+      stat = "identity",
+      width = barplot_optimal_width(data_plot, xaxis),
       show.legend = (color != "none")
     )
 
-  if (flip) p <- p + ggplot2::coord_flip()
+  if (flip) {
+    p <- p + ggplot2::coord_flip()
+  }
 
   if (facet == "none") {
     plotly_margin_right <- 0
@@ -112,13 +117,15 @@ barplot_interactive <- function(
     plotly_margin_right <- 5
     p <- p +
       ggplot2::facet_grid(
-        rows     = ggplot2::vars(.data[[facet]]),
-        scales   = "free",
+        rows = ggplot2::vars(.data[[facet]]),
+        scales = "free",
         labeller = ggplot2::label_wrap_gen(width = 15)
       )
   }
 
-  if (color != "none") p <- p + ggplot2::scale_fill_viridis_d()
+  if (color != "none") {
+    p <- p + ggplot2::scale_fill_viridis_d()
+  }
 
   p <- p +
     ggplot2::scale_x_discrete(
@@ -127,10 +134,10 @@ barplot_interactive <- function(
     ggplot2::labs(x = "", y = "") +
     ggplot2::theme_minimal(base_size = 13, base_family = "Inter") +
     ggplot2::theme(
-      strip.text.y  = ggplot2::element_text(angle = 0),
-      plot.margin   = ggplot2::margin(0, plotly_margin_right, 0, 0, "cm"),
+      strip.text.y = ggplot2::element_text(angle = 0),
+      plot.margin = ggplot2::margin(0, plotly_margin_right, 0, 0, "cm"),
       panel.spacing = ggplot2::unit(2, "points"),
-      axis.text.x   = ggplot2::element_text(angle = ifelse(flip, 0, 40))
+      axis.text.x = ggplot2::element_text(angle = ifelse(flip, 0, 40))
     )
 
   ## -- ggplotly ----------------------------------------------------------------
@@ -139,18 +146,18 @@ barplot_interactive <- function(
       hovermode = ifelse(flip, "y", "x unified"),
       legend = list(
         orientation = "h",
-        xanchor     = "center",
-        yanchor     = "bottom",
-        x           = 0.5,
-        y           = 1.025,
-        title       = list(text = "")
+        xanchor = "center",
+        yanchor = "bottom",
+        x = 0.5,
+        y = 1.025,
+        title = list(text = "")
       )
     )
 
   if (facet_total) {
-    pp$x$layout$annotations[[1]]$text       <- "<b>Total</b>"
+    pp$x$layout$annotations[[1]]$text <- "<b>Total</b>"
     pp$x$layout$annotations[[1]]$font$color <- "rgb(179, 0, 0)"
-    pp$x$layout$shapes[[1]]$line            <- list(color = "rgb(179, 0, 0)", width = 3)
+    pp$x$layout$shapes[[1]]$line <- list(color = "rgb(179, 0, 0)", width = 3)
   }
   return(pp)
 }
@@ -163,7 +170,9 @@ barplot_add_label <- function(data, xaxis, color, facet, display, unit) {
   if (color == "none") {
     data <- data |>
       dplyr::mutate(
-        text_label = glue::glue("<b>{.data[[xaxis]]}</b>: {format(n, big.mark = ',')} {unit}")
+        text_label = glue::glue(
+          "<b>{.data[[xaxis]]}</b>: {format(n, big.mark = ',')} {unit}"
+        )
       )
   } else {
     data <- data |>
@@ -199,11 +208,11 @@ barplot_optimal_width <- function(data, xaxis) {
     nrow()
 
   dplyr::case_when(
-    nb_bars == 1  ~ 0.1,
-    nb_bars <= 5  ~ 0.3,
-    nb_bars <= 8  ~ 0.4,
+    nb_bars == 1 ~ 0.1,
+    nb_bars <= 5 ~ 0.3,
+    nb_bars <= 8 ~ 0.4,
     nb_bars <= 10 ~ 0.5,
     nb_bars <= 20 ~ 0.47,
-    .default      = 0.9
+    .default = 0.9
   )
 }
