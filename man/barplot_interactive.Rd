@@ -14,7 +14,8 @@ barplot_interactive(
   count = TRUE,
   flip = FALSE,
   unit = "units",
-  order
+  order,
+  palette = NULL
 )
 }
 \arguments{
@@ -37,6 +38,11 @@ barplot_interactive(
 \item{unit}{Label for count units shown in tooltips.}
 
 \item{order}{One of "count" or "default".}
+
+\item{palette}{Optional named character vector of fill colours, keyed by the
+levels of `color`. Use it when the levels carry a meaning the reader is
+expected to know (AWaRe classes, S/I/R); leave it `NULL` for plain
+categories, which keep the default viridis scale.}
 }
 \value{
 A plotly object.
